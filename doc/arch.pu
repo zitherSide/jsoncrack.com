@@ -1,0 +1,75 @@
+@startuml
+skinparam linetype ortho
+top to bottom direction
+
+class GraphCanvas{
+
+}
+
+class Editor
+class Panes
+class SideBar{
+    getJson()
+}
+
+class StyledEditor
+class Allotment{
+    Pane
+}
+class JsonEditor
+class LiveEditor
+class Graph{
+    setGraphValue()
+}
+class NodeModal
+class TransformWrapper
+class TransformComponent
+class Canvas
+class Edge
+
+class CustomNode
+interface CustomNodeProps{
+    width
+    height
+}
+class TextNode extends CustomNodeProps
+class ObjectNode extends CustomNodeProps
+class Widget
+
+interface NodeData<T = any> {
+  id: string;
+  disabled?: boolean;
+  text?: any;
+  height?: number;
+  width?: number;
+  parent?: string;
+  ports?: PortData[];
+  icon?: IconData;
+  nodePadding?: number | [number, number] | [number, number, number, number];
+  data?: T;
+  className?: string;
+  layoutOptions?: ElkNodeLayoutOptions;
+  selectionDisabled?: boolean;
+}
+
+Editor *-- SideBar
+Editor *-- Panes
+SideBar *-- ImportModal
+Panes *-- StyledEditor
+StyledEditor *-- Allotment
+Allotment *-- JsonEditor
+Allotment *-- LiveEditor
+LiveEditor *-- Tools
+LiveEditor *-- GraphCanvas
+GraphCanvas *-- Graph
+GraphCanvas *-- NodeModal
+Graph *-- TransformWrapper
+TransformWrapper *-- TransformComponent
+TransformComponent *-- Canvas
+Canvas *-- Edge
+Canvas *-- CustomNode
+
+CustomNode *- ObjectNode
+CustomNode *- TextNode
+
+@enduml

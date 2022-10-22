@@ -19,7 +19,7 @@ const rootProps = {
 
 export const CustomNode = (nodeProps: NodeProps) => {
   const { text, data } = nodeProps.properties;
-
+  //console.log(nodeProps)
   return (
     <Node {...nodeProps} {...(data.isEmpty && rootProps)} label={<React.Fragment />}>
       {({ node, x, y }) => {

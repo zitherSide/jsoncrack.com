@@ -15,7 +15,7 @@ interface ConfigActions {
 const initialStates = {
   json: defaultJson,
   cursorMode: "move" as "move" | "navigation",
-  layout: "RIGHT" as CanvasDirection,
+  layout: "DOWN" as CanvasDirection,
   expand: true,
   hideEditor: false,
   performanceMode: true,
