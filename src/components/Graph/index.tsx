@@ -106,8 +106,10 @@ const GraphComponent = ({
     if (input) input.blur();
   }, []);
 
-  if (nodes.length > 8_000) return <ErrorView />;
-
+  //Max Node　Num
+  const numMaxNodes = 20_000
+  // if (nodes.length > 8_000) return <ErrorView />;
+  if (nodes.length > numMaxNodes) return <ErrorView />;
   return (
     <StyledEditorWrapper isWidget={isWidget}>
       {loading && <Loading message="Painting graph..." />}

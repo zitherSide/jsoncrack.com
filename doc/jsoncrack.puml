@@ -1,0 +1,188 @@
+@startuml
+skinparam Linetype ortho
+'top to bottom direction
+left to right direction
+
+package utils{
+    interface getChildrenEdges{
+        edges getChildrenEdges(nodes, edges)
+    }
+    interface getOutGoers{
+        [outgoers, machingIDs] getOutgoers(id, nodes, edges, parent)        
+    }
+    interface isValidJson{
+        bool isValidJson(jsonStr)        
+    }
+
+    interface jsonParser{
+        {nodes, edges} parse(jsontStr, isExpanded)
+    }
+    
+    interface search{
+        DOM searchQuery(query)
+        void cleanupHightlight()
+        void highlightMatchedNodes(nodes, selectedID)
+    }
+}
+
+package Types{
+    interface CustomNodeData{
+        isParent
+        childrenCount
+        children
+    }
+    interface NodeData<T>{
+        id
+        disabled
+        text
+        height
+        width
+        parentID
+        ports
+        icon
+        nodePadding
+        data: T
+        classname
+        layoutOptions
+        selectionDisabled
+    }
+    interface EdgeData<T>{
+        id
+        disabled
+        text
+        from
+        to
+        fromPort
+        toPort
+        data: T
+        className
+        containerClassName
+        arrowHeadType
+        parent
+        slectionDisabled
+    }
+}
+
+package hooks{
+    package store{
+        interface ConfigInitialState{
+            json
+            cursorMode
+            layout
+            expand
+            hideEditor
+            performanceMode,
+            disableLoading
+            zoomPanPinch
+        }
+        class useConfig{
+            ConfigInitialState useConfig()
+        }
+        class GraphInitialStates{
+            laoding,
+            graphCollapsed
+            nodes: NodeData[]
+            edgets: EdgeData[]
+            collapsedNodes: string[]
+            collapsedEdges: string[]
+            collapsedParents: string[]
+        }
+        class useGraph{
+            GraphInitialStates useGraph()
+        }
+        class Config{
+            lightmode
+            hideCollapse
+            hideChildrenCount
+            sponsers
+        }
+        class useStored{
+            Config useStored()
+        }
+    }
+    useConfig *-- zustand
+    useConfig -- ConfigInitialState
+    useGraph *-- zustand
+    useGraph -- GraphInitialStates
+    useStored *-- persist
+    useStored *-- zustand
+    useStored -- Config
+    
+    class useKeyPress{
+        bool useKeyPress()
+    }
+    class useFocusNode{
+        [content, setCountent, skip] useFocusNode()
+    }
+}
+
+package pages{
+    HomePage *- Home
+    class JsonCrack{
+        setJson
+    }
+    JsonCrack -- useConfig
+}
+package containers{
+    class Home{
+        Head
+        Navbar
+        HeroSection
+        PreviewSection
+        GitHubSection
+        EmbedSection
+        SupportSection
+        SuponsorSection
+        Footer
+    }
+    package Editor {
+        class Panes
+        Panes *- JsonEditor
+        Panes *- LiveEditor
+        class LiveEditor {
+            GraphCanvas
+        }
+        LiveEditor *- GraphCanvas
+        GraphCanvas -- useGraph
+        class GraphCanvas{
+            Graph
+        }
+        GraphCanvas *- Graph
+        class Tools
+        class JsonEditor{
+            monocaEditor
+        }
+    }
+}
+package components{
+    class Graph{
+        nodes
+        edges
+        Canvas
+    }
+    Graph -- useGraph
+    Graph -- useConfig
+    Graph *- Canvas
+    Canvas - CustomNode
+
+    class CustomNode{
+        x
+        y
+        TextNode
+    }
+    CustomNode *- TextNode
+    class TextNode{
+        hasCollapse
+        hideCollapse
+    }
+}
+
+package Reaflow{
+    class Canvas{
+        nodes
+        edges
+        node
+        edge
+    }
+}
+@enduml

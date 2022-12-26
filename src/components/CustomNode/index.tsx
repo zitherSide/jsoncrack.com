@@ -26,7 +26,9 @@ export const CustomNode = (nodeProps: NodeProps) => {
         if (Array.isArray(text)) {
           return <ObjectNode node={node as NodeData} x={x} y={y} />;
         }
-
+        console.log("node", node)
+        console.log("x", x)
+        console.log("y", y)
         return (
           <TextNode
             node={node as NodeData}

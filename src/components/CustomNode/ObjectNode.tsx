@@ -24,7 +24,9 @@ const ObjectNode: React.FC<CustomNodeProps> = ({ node, x, y }) => {
       isObject
     >
       {(!performanceMode || inViewport) &&
-        text.map((val, idx) => (
+        text/*.filter((val,idx) => val[0] !== 'name')*/.map((val, idx) => {
+          console.log('val', val)
+          return (
           <Styled.StyledRow
             data-key={JSON.stringify(val[1])}
             data-x={x}
@@ -36,7 +38,8 @@ const ObjectNode: React.FC<CustomNodeProps> = ({ node, x, y }) => {
             </Styled.StyledKey>
             <Styled.StyledLinkItUrl>{JSON.stringify(val[1])}</Styled.StyledLinkItUrl>
           </Styled.StyledRow>
-        ))}
+        )})
+      }
     </Styled.StyledForeignObject>
   );
 };

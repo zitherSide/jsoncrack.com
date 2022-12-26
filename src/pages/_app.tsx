@@ -12,6 +12,7 @@ import useConfig from "src/hooks/store/useConfig";
 import useStored from "src/hooks/store/useStored";
 import { isValidJson } from "src/utils/isValidJson";
 import { ThemeProvider } from "styled-components";
+import YAML from "js-yaml"
 
 if (process.env.NODE_ENV !== "development") {
   init({
@@ -23,20 +24,29 @@ if (process.env.NODE_ENV !== "development") {
 function JsonCrack({ Component, pageProps }: AppProps) {
   const { query } = useRouter();
   const lightmode = useStored(state => state.lightmode);
-  const setJson = useConfig(state => state.setJson);
+  // const setJson = useConfig(state => state.setJson);
+  const setYaml = useConfig(state => state.setYaml);
   const [isRendered, setRendered] = React.useState(false);
 
   React.useEffect(() => {
-    const isJsonValid =
-      typeof query.json === "string" && isValidJson(decodeURIComponent(query.json));
+    // const isJsonValid =
+    //   typeof query.json === "string" && isValidJson(decodeURIComponent(query.json));
+    const isYamlValid =
+      typeof query.json === "string" && decodeURIComponent(query.json);
 
-    if (isJsonValid) {
-      const jsonDecoded = decompress(JSON.parse(isJsonValid));
-      const jsonString = JSON.stringify(jsonDecoded);
+    console.log('query.json', query.json)
+    console.log('qyery', query)
+    // if (isJsonValid) {
+    if (isYamlValid) {
+      // const jsonDecoded = decompress(JSON.parse(isJsonValid));
+      const yamlDecoded = YAML.load(isYamlValid);
+      const yamlString = YAML.dump(yamlDecoded);
+      // const jsonString = JSON.stringify(jsonDecoded);
 
-      setJson(jsonString);
+      setYaml(yamlString);
+      // setJson(jsonString);
     }
-  }, [query.json, setJson]);
+  }, [query.json, setYaml]);
 
   React.useEffect(() => {
     setRendered(true);
