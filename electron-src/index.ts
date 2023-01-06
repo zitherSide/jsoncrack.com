@@ -1,8 +1,8 @@
-import { join } from "path";
-import { format } from "url";
 import { BrowserWindow, app, shell } from "electron";
 import isDev from "electron-is-dev";
 import prepareNext from "electron-next";
+import { join } from "path";
+import { format } from "url";
 
 app.on("ready", async () => {
   await prepareNext(".");

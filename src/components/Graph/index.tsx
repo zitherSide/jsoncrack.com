@@ -52,9 +52,11 @@ const GraphComponent = ({
   const centerView = useConfig(state => state.centerView);
   const loading = useGraph(state => state.loading);
   const layout = useConfig(state => state.layout);
+  // const nodes = useGraph(state => state.collapseNodes);
   const nodes = useGraph(state => state.nodes);
   const edges = useGraph(state => state.edges);
 
+  // console.log("nodes", nodes)
   const [size, setSize] = React.useState({
     width: 1,
     height: 1,
@@ -107,7 +109,7 @@ const GraphComponent = ({
   }, []);
 
   //Max Node　Num
-  const numMaxNodes = 20_000
+  const numMaxNodes = 20_000;
   // if (nodes.length > 8_000) return <ErrorView />;
   if (nodes.length > numMaxNodes) return <ErrorView />;
   return (

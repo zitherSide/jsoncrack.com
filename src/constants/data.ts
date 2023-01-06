@@ -1,4 +1,5 @@
-import yaml from 'js-yaml'
+import yaml from "js-yaml";
+
 export const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Example taken from https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json
@@ -35,6 +36,9 @@ const sampleJson = Object.freeze({
     },
   ],
 });
-
+export const defaultFilter = {
+  keys: ["description", "comment"],
+  values: ["branch"],
+};
 export const defaultJson = JSON.stringify(sampleJson, null, 2);
-export const defaultYaml = yaml.dump(sampleJson)
+export const defaultYaml = yaml.dump(sampleJson);

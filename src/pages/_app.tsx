@@ -2,7 +2,8 @@ import React from "react";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { init } from "@sentry/nextjs";
-import { decompress } from "compress-json";
+// import { decompress } from "compress-json";
+import YAML from "js-yaml";
 import { Toaster } from "react-hot-toast";
 import { GoogleAnalytics } from "src/components/GoogleAnalytics";
 import { SupportButton } from "src/components/SupportButton";
@@ -10,9 +11,8 @@ import GlobalStyle from "src/constants/globalStyle";
 import { darkTheme, lightTheme } from "src/constants/theme";
 import useConfig from "src/hooks/store/useConfig";
 import useStored from "src/hooks/store/useStored";
-import { isValidJson } from "src/utils/isValidJson";
+// import { isValidJson } from "src/utils/isValidJson";
 import { ThemeProvider } from "styled-components";
-import YAML from "js-yaml"
 
 if (process.env.NODE_ENV !== "development") {
   init({
@@ -34,8 +34,8 @@ function JsonCrack({ Component, pageProps }: AppProps) {
     const isYamlValid =
       typeof query.json === "string" && decodeURIComponent(query.json);
 
-    console.log('query.json', query.json)
-    console.log('qyery', query)
+    // console.log('query.json', query.json)
+    // console.log('qyery', query)
     // if (isJsonValid) {
     if (isYamlValid) {
       // const jsonDecoded = decompress(JSON.parse(isJsonValid));
@@ -43,7 +43,8 @@ function JsonCrack({ Component, pageProps }: AppProps) {
       const yamlString = YAML.dump(yamlDecoded);
       // const jsonString = JSON.stringify(jsonDecoded);
 
-      setYaml(yamlString);
+      setYaml(isYamlValid);
+      // setYaml(yamlString);
       // setJson(jsonString);
     }
   }, [query.json, setYaml]);

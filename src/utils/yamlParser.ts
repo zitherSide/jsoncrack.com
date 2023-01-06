@@ -29,6 +29,8 @@ const calculateSize = (
   return {
     width: getWidth(),
     height: getHeight(),
+    // width: 80,
+    // height: 80,
   };
 };
 
@@ -122,14 +124,21 @@ const relationships = (xs: { id: string; children: never[] }[]) => {
   ]);
 };
 
-export const parser = (jsonStr: string, isExpanded = true) => {
+export const parser = (jsonStr: string, isExpanded = true, filters = null) => {
   try {
-    let json = YAML.load(jsonStr);
-    if (!Array.isArray(json)) json = [json];
+    // jsonStr = indentChild(jsonStr)
+    jsonStr = replaceInclude(jsonStr)
+    // console.log('jsonstr', jsonStr)
+    let yaml = YAML.load(jsonStr);
+    const dotteds = categorizeDottedMembers(yaml)
+    restructureDottedMembers(yaml, dotteds)
+    
+    if (!Array.isArray(yaml)) yaml = [yaml];
+
     const nodes: NodeData[] = [];
     const edges: EdgeData[] = [];
 
-    const mappedElements = extract(json, isExpanded);
+    const mappedElements = extract(yaml, isExpanded);
     const res = [...flatten(mappedElements), ...relationships(mappedElements)];
 
     res.forEach(data => {
@@ -150,7 +159,97 @@ export const parser = (jsonStr: string, isExpanded = true) => {
   }
 };
 
+export const recalcSize = nodes => {
+  nodes.forEach(n => {
+    const { width, height } = calculateSize(n.text, n.data.isParent, true);
+    n.width = width;
+    n.height = height;
+  });
+  return;
+};
+
 function isNode(element: NodeData | EdgeData) {
   if ("text" in element) return true;
   return false;
+}
+
+export const replaceInclude = (data: string) => {
+  const pattern = /^#include\s+(?<nodeName>.+)\s+(?<parentName>.+)$/;
+  let lines = data.split(/\n/)
+  const replacer = data.split(/\n/).flatMap(l => {
+    const matched = l.match(pattern)
+    if(matched){
+      return {
+        line: matched[0],
+        node: matched.groups?.nodeName,
+        parent: matched.groups?.parentName
+      }
+    }else{
+      return []
+    }
+  })
+  if(replacer.length == 0){
+    return data
+  }
+
+  replacer.forEach((target, i) => {
+    lines = lines.flatMap(l => {
+      const parentPattern = new RegExp(`${target.parent}:`);
+
+      if(l.match(target.line)){
+        return []
+      }else if(l.match(parentPattern)){
+        return [l, `  include_${i}: ${target.node}`]
+      }else{
+        return l
+      }
+    })
+  })
+  return lines.join('\n')
+};
+
+const categorizeDottedMembers = data => {
+  return Object.keys(data).map(key => {
+    return {
+      key: key, 
+      val: data[key]
+    }
+  }).flatMap(elem => {
+    const dotMatch = elem.key.match(/\./g)
+    if(dotMatch){
+      return {
+        level: dotMatch.length,
+        ...elem
+      }
+    }else{
+      return []
+    }
+  })
+}
+
+interface DottedMember{
+  level: number,
+  key: string,
+  val: object
+}
+const restructureDottedMembers = (originalData, dottedMembers: DottedMember[]) => {
+  const levels = Array.from(new Set(dottedMembers.map(elem => elem.level))).sort((a, b) => b - a)
+  levels.forEach(level => {
+    const members = 
+    dottedMembers
+      .filter(elem => elem.level === level)
+      .forEach(m => {
+        const match = m.key.match(/(?<parent>.*)\.(?<node>[^\.]+)$/)
+        if(match?.groups){
+          const parent = match.groups.parent
+          const node = match.groups.node
+          
+          if(originalData[parent]){
+            originalData[parent][node] = m.val
+            delete originalData[m.key]
+          }
+        }
+      }
+    )
+  })
 }

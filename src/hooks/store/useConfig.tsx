@@ -1,6 +1,6 @@
 import { ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
 import { CanvasDirection } from "reaflow";
-import { defaultJson, defaultYaml } from "src/constants/data";
+import { defaultJson, defaultYaml, defaultFilter } from "src/constants/data";
 import create from "zustand";
 
 interface ConfigActions {
@@ -8,6 +8,7 @@ interface ConfigActions {
   setYaml: (yaml: string) => void;
   setConfig: (key: keyof Config, value: unknown) => void;
   getJson: () => string;
+  getYaml: () => string;
   zoomIn: () => void;
   zoomOut: () => void;
   centerView: () => void;
@@ -16,6 +17,7 @@ interface ConfigActions {
 const initialStates = {
   json: defaultJson,
   yaml: defaultYaml,
+  rawYaml: defaultYaml,
   cursorMode: "move" as "move" | "navigation",
   layout: "DOWN" as CanvasDirection,
   expand: true,
@@ -23,6 +25,8 @@ const initialStates = {
   performanceMode: true,
   disableLoading: false,
   zoomPanPinch: undefined as ReactZoomPanPinchRef | undefined,
+  hideComment: true,
+  filters: defaultFilter,
 };
 
 export type Config = typeof initialStates;
@@ -32,7 +36,7 @@ const useConfig = create<Config & ConfigActions>()((set, get) => ({
   getJson: () => get().json,
   setJson: (json: string) => set({ json }),
   getYaml: () => get().yaml,
-  setYaml: (yaml: string) => set({yaml}),
+  setYaml: (yaml: string) => set({ yaml }),
   zoomIn: () => {
     const zoomPanPinch = get().zoomPanPinch;
     if (zoomPanPinch) {

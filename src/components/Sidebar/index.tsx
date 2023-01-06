@@ -10,12 +10,15 @@ import {
   AiOutlineFileAdd,
   AiOutlineLink,
   AiOutlineEdit,
+  AiOutlineFilter,
 } from "react-icons/ai";
 import {
   CgArrowsMergeAltH,
   CgArrowsMergeAltV,
   CgArrowsShrinkH,
   CgArrowsShrinkV,
+  CgArrowsExpandDownRight,
+  CgArrowsExpandDownLeft,
 } from "react-icons/cg";
 import { FiDownload } from "react-icons/fi";
 import { HiHeart } from "react-icons/hi";
@@ -24,6 +27,7 @@ import { TiFlowMerge } from "react-icons/ti";
 import { Tooltip } from "src/components/Tooltip";
 import { ClearModal } from "src/containers/Modals/ClearModal";
 import { DownloadModal } from "src/containers/Modals/DownloadModal";
+import { FilterModal } from "src/containers/Modals/FilterModal";
 import { ImportModal } from "src/containers/Modals/ImportModal";
 import { ShareModal } from "src/containers/Modals/ShareModal";
 import useConfig from "src/hooks/store/useConfig";
@@ -146,17 +150,19 @@ function rotateLayout(layout: "LEFT" | "RIGHT" | "DOWN" | "UP") {
 }
 
 export const Sidebar: React.FC = () => {
-  const getJson = useConfig(state => state.getJson);
+  // const getJson = useConfig(state => state.getJson);
+  const getYaml = useConfig(state => state.getYaml);
   const setConfig = useConfig(state => state.setConfig);
   const centerView = useConfig(state => state.centerView);
   const [uploadVisible, setUploadVisible] = React.useState(false);
+  const [filterVisible, setFilterVisible] = React.useState(false);
   const [clearVisible, setClearVisible] = React.useState(false);
   const [shareVisible, setShareVisible] = React.useState(false);
   const [isDownloadVisible, setDownloadVisible] = React.useState(false);
   const { push } = useRouter();
 
-  const [expand, layout, hideEditor] = useConfig(
-    state => [state.expand, state.layout, state.hideEditor],
+  const [expand, layout, hideEditor, hideComment] = useConfig(
+    state => [state.expand, state.layout, state.hideEditor, state.hideComment],
     shallow
   );
 
@@ -164,16 +170,22 @@ export const Sidebar: React.FC = () => {
 
   const handleSave = () => {
     const a = document.createElement("a");
-    const file = new Blob([getJson()], { type: "text/plain" });
+    const file = new Blob([getYaml()], { type: "text/plain" });
 
     a.href = window.URL.createObjectURL(file);
-    a.download = "jsoncrack.json";
+    // a.download = "jsoncrack.json";
+    a.download = "vspeccrack.yaml";
     a.click();
   };
 
   const toggleExpandShrink = () => {
     setConfig("expand", !expand);
     toast(`${expand ? "Shrunk" : "Expanded"} nodes.`);
+  };
+
+  const toggleHideComment = () => {
+    setConfig("hideComment", !hideComment);
+    toast(`${hideComment ? "Hide" : "Show"} comments.`);
   };
 
   const toggleLayout = () => {
@@ -229,13 +241,21 @@ export const Sidebar: React.FC = () => {
         </Tooltip>
         <Tooltip
           className="desktop"
+          title={hideComment ? "Show Comments" : "Hide Comments"}
+        >
+          <StyledElement title="Toggle Expand/Shrink" onClick={toggleHideComment}>
+            {hideComment ? <CgArrowsExpandDownLeft /> : <CgArrowsExpandDownRight />}
+          </StyledElement>
+        </Tooltip>
+        <Tooltip
+          className="desktop"
           title={graphCollapsed ? "Expand Graph" : "Collapse Graph"}
         >
           <StyledElement onClick={toggleExpandCollapseGraph}>
             {graphCollapsed ? <CgArrowsShrinkV /> : <CgArrowsMergeAltV />}
           </StyledElement>
         </Tooltip>
-        <Tooltip className="desktop" title="Save JSON">
+        <Tooltip className="desktop" title="Save Yaml">
           <StyledElement onClick={handleSave}>
             <AiOutlineSave />
           </StyledElement>
@@ -253,6 +273,11 @@ export const Sidebar: React.FC = () => {
         <Tooltip className="desktop" title="Share">
           <StyledElement onClick={() => setShareVisible(true)}>
             <AiOutlineLink />
+          </StyledElement>
+        </Tooltip>
+        <Tooltip title="Filter">
+          <StyledElement onClick={() => setFilterVisible(true)}>
+            <AiOutlineFilter />
           </StyledElement>
         </Tooltip>
       </StyledTopWrapper>
@@ -280,6 +305,7 @@ export const Sidebar: React.FC = () => {
         </StyledElement>
       </StyledBottomWrapper>
       <ImportModal visible={uploadVisible} setVisible={setUploadVisible} />
+      <FilterModal visible={filterVisible} setVisible={setFilterVisible} />
       <ClearModal visible={clearVisible} setVisible={setClearVisible} />
       <ShareModal visible={shareVisible} setVisible={setShareVisible} />
       <DownloadModal visible={isDownloadVisible} setVisible={setDownloadVisible} />

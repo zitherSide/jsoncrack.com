@@ -11,7 +11,7 @@ const ObjectNode: React.FC<CustomNodeProps> = ({ node, x, y }) => {
   const ref = React.useRef(null);
   const performanceMode = useConfig(state => state.performanceMode);
   // const { inViewport } = useInViewport(ref);
-
+  // console.log("ObjectNode height", height)
   if (data.isEmpty) return null;
 
   return (
@@ -24,22 +24,27 @@ const ObjectNode: React.FC<CustomNodeProps> = ({ node, x, y }) => {
       isObject
     >
       {(!performanceMode || inViewport) &&
-        text/*.filter((val,idx) => val[0] !== 'name')*/.map((val, idx) => {
-          console.log('val', val)
-          return (
-          <Styled.StyledRow
-            data-key={JSON.stringify(val[1])}
-            data-x={x}
-            data-y={y}
-            key={idx}
-          >
-            <Styled.StyledKey objectKey>
-              {JSON.stringify(val[0]).replaceAll('"', "")}:{" "}
-            </Styled.StyledKey>
-            <Styled.StyledLinkItUrl>{JSON.stringify(val[1])}</Styled.StyledLinkItUrl>
-          </Styled.StyledRow>
-        )})
-      }
+        text
+          // .filter( (val, inx) => val[0] !== 'comment' && val[0] !== 'description')
+          /*.filter((val,idx) => val[0] !== 'name')*/
+          .map((val, idx) => {
+            // console.log('val', val)
+            return (
+              <Styled.StyledRow
+                data-key={JSON.stringify(val[1])}
+                data-x={x}
+                data-y={y}
+                key={idx}
+              >
+                <Styled.StyledKey objectKey>
+                  {JSON.stringify(val[0]).replaceAll('"', "")}:{" "}
+                </Styled.StyledKey>
+                <Styled.StyledLinkItUrl>
+                  {JSON.stringify(val[1])}
+                </Styled.StyledLinkItUrl>
+              </Styled.StyledRow>
+            );
+          })}
     </Styled.StyledForeignObject>
   );
 };

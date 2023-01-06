@@ -153,6 +153,9 @@ package containers{
             monocaEditor
         }
     }
+    package Modals{
+        class importModal
+    }
 }
 package components{
     class Graph{
@@ -174,6 +177,9 @@ package components{
     class TextNode{
         hasCollapse
         hideCollapse
+    }
+    class Sidebar{
+        void handleSave()
     }
 }
 

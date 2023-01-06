@@ -24,11 +24,13 @@ export const CustomNode = (nodeProps: NodeProps) => {
     <Node {...nodeProps} {...(data.isEmpty && rootProps)} label={<React.Fragment />}>
       {({ node, x, y }) => {
         if (Array.isArray(text)) {
+          // node.height = 100
+          // y = 100
+          // console.log("node height", node.height)
           return <ObjectNode node={node as NodeData} x={x} y={y} />;
         }
-        console.log("node", node)
-        console.log("x", x)
-        console.log("y", y)
+        // console.log("x", x)
+        // console.log("y", y)
         return (
           <TextNode
             node={node as NodeData}
