@@ -44,27 +44,22 @@ const StyledUploadMessage = styled.h3`
 
 export const ImportModal: React.FC<ModalProps> = ({ visible, setVisible }) => {
   const setYaml = useConfig(state => state.setYaml);
-  // const setJson = useConfig(state => state.setJson);
   const [url, setURL] = React.useState("");
-  // const [jsonFile, setJsonFile] = React.useState<File | null>(null);
   const [yamlFile, setYamlFile] = React.useState<File | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) setYamlFile(e.target.files?.item(0));
-    // if (e.target.files) setJsonFile(e.target.files?.item(0));
   };
 
   const handleImportFile = () => {
     if (url) {
       setYamlFile(null);
-      // setJsonFile(null);
 
       toast.loading("Loading...", { id: "toastFetch" });
       return fetch(url)
         .then(res => res.json())
         .then(json => {
           setYaml(YAML.load(json));
-          // setJson(JSON.stringify(json));
           setVisible(false);
         })
         .catch(() => toast.error("Failed to fetch JSON!"))
@@ -77,7 +72,6 @@ export const ImportModal: React.FC<ModalProps> = ({ visible, setVisible }) => {
       reader.readAsText(yamlFile, "UTF-8");
       reader.onload = function (data) {
         setYaml(data.target?.result as string);
-        // setJson(data.target?.result as string);
         setVisible(false);
       };
     }

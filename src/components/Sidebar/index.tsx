@@ -150,7 +150,6 @@ function rotateLayout(layout: "LEFT" | "RIGHT" | "DOWN" | "UP") {
 }
 
 export const Sidebar: React.FC = () => {
-  // const getJson = useConfig(state => state.getJson);
   const getYaml = useConfig(state => state.getYaml);
   const setConfig = useConfig(state => state.setConfig);
   const centerView = useConfig(state => state.centerView);
@@ -173,7 +172,6 @@ export const Sidebar: React.FC = () => {
     const file = new Blob([getYaml()], { type: "text/plain" });
 
     a.href = window.URL.createObjectURL(file);
-    // a.download = "jsoncrack.json";
     a.download = "vspeccrack.yaml";
     a.click();
   };

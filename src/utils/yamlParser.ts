@@ -126,9 +126,7 @@ const relationships = (xs: { id: string; children: never[] }[]) => {
 
 export const parser = (jsonStr: string, isExpanded = true, filters = null) => {
   try {
-    // jsonStr = indentChild(jsonStr)
     jsonStr = replaceInclude(jsonStr)
-    // console.log('jsonstr', jsonStr)
     let yaml = YAML.load(jsonStr);
     const dotteds = categorizeDottedMembers(yaml)
     restructureDottedMembers(yaml, dotteds)

@@ -11,7 +11,6 @@ const ObjectNode: React.FC<CustomNodeProps> = ({ node, x, y }) => {
   const ref = React.useRef(null);
   const performanceMode = useConfig(state => state.performanceMode);
   // const { inViewport } = useInViewport(ref);
-  // console.log("ObjectNode height", height)
   if (data.isEmpty) return null;
 
   return (
@@ -25,10 +24,7 @@ const ObjectNode: React.FC<CustomNodeProps> = ({ node, x, y }) => {
     >
       {(!performanceMode || inViewport) &&
         text
-          // .filter( (val, inx) => val[0] !== 'comment' && val[0] !== 'description')
-          /*.filter((val,idx) => val[0] !== 'name')*/
           .map((val, idx) => {
-            // console.log('val', val)
             return (
               <Styled.StyledRow
                 data-key={JSON.stringify(val[1])}
